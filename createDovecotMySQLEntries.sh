@@ -5,10 +5,16 @@
 #
 #
 
-CRYPT="SHA512-CRYPT"
+#Art der Verschlüsselung eintragen (z.B. SHA512-CRYPT)
+CRYPT=""
 
+#SQL Benutzer eintragen. Muß die Rechte besitzen, Einräge in die Datenbank vornehmen zu dürfen
 SQLUSER="vmail"
+
+#Paßwort des SQL-Benutzers
 SQLUSERPASSWD=""
+
+#Datenbankname 
 DB="vmail"
 
 
@@ -19,7 +25,7 @@ function createUser {
 	HASH=`doveadm pw -s $CRYPT`
 	SQLINSERTUSER="INSERT into users (username, domain, password) values ('$USER', '$LTD', '$HASH');"
 	echo "Die SQL Syntax lautet: "$SQLINSERTUSER
-	echo "Schreibe in Datenbank"
+	echo "Schreibe Eintrag in Datenbank"
     mysql --user="$SQLUSER" --password="$SQLUSERPASSWD" --database="$DB"  --execute="$SQLINSERTUSER"
 
 }
@@ -29,7 +35,7 @@ function createAlias {
 	DESTINATION=$2
 	SQLINSERTALIAS="INSERT into aliases (source, destination) values ('$ALIAS', '$DESTINATION');"
 	echo "Die SQL Syntax lautet: "$SQLINSERTALIAS
-	echo "Schreibe in Datenbank"
+	echo "Schreibe Eintrag in Datenbank"
     mysql --user="$SQLUSER" --password="$SQLUSERPASSWD" --database="$DB"  --execute="$SQLINSERTALIAS"
 }
 
@@ -37,7 +43,7 @@ function createDomain {
     DOMAIN=$1
     SQLINSERTDOMAIN="insert into domains (domain) values ('$DOMAIN');"
 	echo "Die SQL Syntax lautet: "$SQLINSERTDOMAIN
-	echo "Schreibe in Datenbank"
+	echo "Schreibe Eintrag in Datenbank"
     mysql --user="$SQLUSER" --password="$SQLUSERPASSWD" --database="$DB"  --execute="$SQLINSERTDOMAIN"
 }
 
@@ -48,21 +54,21 @@ if [ $# -gt 0 ] ; then
          if [ $# -gt 2 ] ; then
             createUser $2 $3
         else
-            echo "2 Parameter (Name, Domain angeben)"
+            echo "1 oder 2 Parameter (fehlen Name, Domain angeben)"
         fi
     elif [ "$1" == "createalias" ] ; then
         if [ $# -gt 2 ] ; then
             createAlias $2 $3
         else
-            echo "2 Parameter (QuelleAdresse Zieladresse angeben)"
+            echo "1 oder 2 Parameter fehlen (Quelladresse, Zieladresse angeben)"
         fi
     elif [ "$1" == "createdomain" ] ; then
         if [ $# -gt 1 ] ; then
             createDomain $2
         else
-            echo "1 Parameter (Domain angeben)"
+            echo "1 Parameter fehlt (Domain angeben)"
         fi
     fi
 else
-	echo "Skript kann in einer MYSQL-DB Benutzer, Alias und Domains anlegen "
+	echo "Skript zum Anlegen von Benutzern, Aliases und Domains in einer MySQl Datenbank."
 fi
