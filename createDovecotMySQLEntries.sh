@@ -4,18 +4,12 @@
 #
 #
 #
+CONFIGFILE="~/.createDovecotmySQLEntries"
+CRYPT="SHA512-CRYPT"
 
-#Art der Verschlüsselung eintragen (z.B. SHA512-CRYPT)
-CRYPT=""
-
-#SQL Benutzer eintragen. Muß die Rechte besitzen, Einräge in die Datenbank vornehmen zu dürfen
-SQLUSER="vmail"
-
-#Paßwort des SQL-Benutzers
+SQLUSER=""
 SQLUSERPASSWD=""
-
-#Datenbankname 
-DB="vmail"
+DB=""
 
 
 function createUser {
@@ -49,8 +43,29 @@ function createDomain {
 
 echo "Anzahl: "$#
 
+function showHelp {
+	echo  -e "Das Skript schreibt in eine MySQL-DB, welche von Dovecot benutzt wird, Eintrae fuer folgende Arten: Benutzer, aliases und Domains. Die Syntax lautet:\n createDovecotMySQLEntries createuser eMailAdresse Passwort - Erstellt neuen Benutzer. Das Passwort muss der Benutzer eingeben \n - createDovecotEntries createalias QuelleMailadresse ZieleMailadresse - Erzeugt einen eMail-Alias (weiterleitung) vond er Quell- auf die Zieladresse\n - createdomain domain Erzeugt einen neuen Domain-Eintrag (z.B. test-de)"
+}
+
+function createConfigfile {
+	echo "Es wird eine neue Konfigurationsdatei erstellt (unter "$CONFIGFILE".)"
+	read -p "Name des DB-Benutzers:" SQLUSER
+	read -p "Passwort des DB-Benutzers:" SQLUSERPASSWD
+	read -p "Name der Datenbank:" DB
+	read -p "Versluesselungsart (Leer lassen fuer Standard: SHA-512)" CRYPT
+	if [ -z "$CRYPT" ] ; then
+		CRYPT="SHA512-Crypt"
+	fi
+	touch $CONFIGFILE
+	echo -e "CRYPT="$CYRPT"\nSQLUSER="$SQLUSER"\nSQLUSERPASSWD="$SQLUSERPASSWD"\nDB="$DB > $CONFIGFILE
+}
+
 if [ $# -gt 0 ] ; then
-	if [ "$1" == "createuser" ] ; then
+    if [ ! -f "$CONFIGFILE" ] ; then
+	createConfigfile
+    fi
+    source $CONFIGFILE
+    if [ "$1" == "createuser" ] ; then
          if [ $# -gt 2 ] ; then
             createUser $2 $3
         else
@@ -68,7 +83,9 @@ if [ $# -gt 0 ] ; then
         else
             echo "1 Parameter fehlt (Domain angeben)"
         fi
+    else
+        showHelp
     fi
 else
-	echo "Skript zum Anlegen von Benutzern, Aliases und Domains in einer MySQl Datenbank."
+	showHelp
 fi
