@@ -4,7 +4,7 @@
 #
 #
 #
-CONFIGFILE="~/.createDovecotmySQLEntries"
+CONFIGFILE="/home/joerg/.createDovecotmySQLEntries"
 CRYPT="SHA512-CRYPT"
 
 SQLUSER=""
@@ -15,7 +15,11 @@ DB=""
 function createUser {
     USER=$1
     LTD=$2
+    CRYPT="SHA512-CRYPT"
+    echo "passwort: "$3 
     echo "Bitte das Passwort für den neuen Benutzer $USER angeben:"
+	TEST="doveadm pw -s "$CRYPT
+	echo $TEST
 	HASH=`doveadm pw -s $CRYPT`
 	SQLINSERTUSER="INSERT into users (username, domain, password) values ('$USER', '$LTD', '$HASH');"
 	echo "Die SQL Syntax lautet: "$SQLINSERTUSER
