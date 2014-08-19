@@ -16,14 +16,10 @@ function createUser {
     USER=$1
     LTD=$2
     CRYPT="SHA512-CRYPT"
-    echo "passwort: "$3 
     echo "Bitte das Passwort für den neuen Benutzer $USER angeben:"
-	TEST="doveadm pw -s "$CRYPT
-	echo $TEST
 	HASH=`doveadm pw -s $CRYPT`
 	SQLINSERTUSER="INSERT into users (username, domain, password) values ('$USER', '$LTD', '$HASH');"
-	echo "Die SQL Syntax lautet: "$SQLINSERTUSER
-	echo "Schreibe Eintrag in Datenbank"
+	echo "Schreibe folgenden Eintrag in Datenbank: "$SQLINSERTUSER
     mysql --user="$SQLUSER" --password="$SQLUSERPASSWD" --database="$DB"  --execute="$SQLINSERTUSER"
 
 }
@@ -32,20 +28,16 @@ function createAlias {
     ALIAS=$1
 	DESTINATION=$2
 	SQLINSERTALIAS="INSERT into aliases (source, destination) values ('$ALIAS', '$DESTINATION');"
-	echo "Die SQL Syntax lautet: "$SQLINSERTALIAS
-	echo "Schreibe Eintrag in Datenbank"
+	echo "Schreibe folgenden Eintrag in Datenbank: "$SQLINSERTALIAS
     mysql --user="$SQLUSER" --password="$SQLUSERPASSWD" --database="$DB"  --execute="$SQLINSERTALIAS"
 }
 
 function createDomain {
     DOMAIN=$1
     SQLINSERTDOMAIN="insert into domains (domain) values ('$DOMAIN');"
-	echo "Die SQL Syntax lautet: "$SQLINSERTDOMAIN
-	echo "Schreibe Eintrag in Datenbank"
+	echo "Schreibe folgenden Eintrag in DB: "$SQLINSERTDOMAIN
     mysql --user="$SQLUSER" --password="$SQLUSERPASSWD" --database="$DB"  --execute="$SQLINSERTDOMAIN"
 }
-
-echo "Anzahl: "$#
 
 function showHelp {
 	echo  -e "Das Skript schreibt in eine MySQL-DB, welche von Dovecot benutzt wird, Eintrae fuer folgende Arten: Benutzer, aliases und Domains. Die Syntax lautet:\n createDovecotMySQLEntries createuser eMailAdresse Passwort - Erstellt neuen Benutzer. Das Passwort muss der Benutzer eingeben \n - createDovecotEntries createalias QuelleMailadresse ZieleMailadresse - Erzeugt einen eMail-Alias (weiterleitung) vond er Quell- auf die Zieladresse\n - createdomain domain Erzeugt einen neuen Domain-Eintrag (z.B. test-de)"
