@@ -2,7 +2,7 @@
 =========================
 
 ##Uebersicht
-Dieses Shell Skript dient zum Erstellen von Benutzer-, alias- und Domain-Eintraegen in einer MyL-DB. Die Tabellen der DB müssen die Struktur der Beispiel-Tabellen aus den Dovecot Konfigurationsdateien haben, andernfalls ist eine Nutzung dieses Skript nicht möglich.
+Dieses Shell Skript dient zum Erstellen von Benutzer-, alias- und Domain-Eintraegen in einer MySQL-DB. Die Tabellen der DB müssen die Struktur der Beispiel-Tabellen aus den Dovecot Konfigurationsdateien haben, andernfalls ist eine Nutzung dieses Skript nicht möglich.
 
 Wird das Skript das erste Mal aufgerufen wird eine Konfigurationsdatei unter ~/.createDovecotMySQLEntries erzeugt. **Achtung**: In dieser Datei wird unter anderem das abgefragte Passwort gespeichert! Dies kann ein Sicherheitsrisiko darstellen.
 

@@ -65,7 +65,7 @@ if [ $# -gt 0 ] ; then
          if [ $# -gt 2 ] ; then
             createUser $2 $3
         else
-            echo "1 oder 2 Parameter (fehlen Name, Domain angeben)"
+            echo "1 oder 2 Parameter fehlen (Name, Domain angeben, Passwort wird anschliessend abgefragt)"
         fi
     elif [ "$1" == "createalias" ] ; then
         if [ $# -gt 2 ] ; then
